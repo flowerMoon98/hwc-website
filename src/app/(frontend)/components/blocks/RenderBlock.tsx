@@ -1,7 +1,9 @@
+'use client'
+
 // src/app/(frontend)/components/blocks/RenderBlock.tsx
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { Page } from '../../../../payload-types'
+import type { Page } from '@/payload-types'
 
 // Import block components - adjust these based on how each component is actually exported
 import { ContactFormBlock as ContactForm } from './ContactForm'
@@ -11,11 +13,18 @@ import Intro from './Intro'
 import OurNiche from './OurNiche'
 import Testimonials from './Testimonial' // File is named Testimonial.tsx but exports Testimonials component
 
-// Type for blocks from payload-types.ts
-type BlockType = Extract<Page['layout'][number], { blockType: string }>
+// Define a simpler approach to block types
+type BlockComponentsType = {
+  hero: typeof Hero;
+  content: typeof Content;
+  contactForm: typeof ContactForm;
+  intro: typeof Intro;
+  ourNiche: typeof OurNiche;
+  testimonials: typeof Testimonials;
+}
 
 // Map block types to their respective components
-const blockComponents: Record<string, React.ComponentType<BlockType>> = {
+const blockComponents: BlockComponentsType = {
   hero: Hero,
   content: Content,
   contactForm: ContactForm,
@@ -25,7 +34,7 @@ const blockComponents: Record<string, React.ComponentType<BlockType>> = {
 }
 
 export type RenderBlockProps = {
-  blocks: BlockType[] | null | undefined
+  blocks: Page['layout'] | null | undefined
   className?: string
 }
 
@@ -68,7 +77,9 @@ export const RenderBlock: React.FC<RenderBlockProps> = ({ blocks, className }) =
   return (
     <div className={className}>
       {blocks.map((block, index) => {
-        const BlockComponent = blockComponents[block.blockType as keyof typeof blockComponents]
+        // Type guard to ensure blockType is a valid key
+        const blockType = block.blockType as keyof BlockComponentsType
+        const BlockComponent = blockComponents[blockType]
 
         if (!BlockComponent) {
           console.warn(`Block of type '${block.blockType}' is not supported.`)
@@ -85,11 +96,12 @@ export const RenderBlock: React.FC<RenderBlockProps> = ({ blocks, className }) =
             FallbackComponent={BlockErrorFallback}
             onReset={() => {
               // Reset the error state when "Try again" is clicked
-              // You could potentially re-fetch data here if needed
             }}
           >
             <div className={index > 0 ? 'block-spacing' : ''}>
-              <BlockComponent {...block} />
+              {/* Type assertion needed due to the dynamic nature of blocks */}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <BlockComponent {...(block as any)} />
             </div>
           </ErrorBoundary>
         )
