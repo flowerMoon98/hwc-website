@@ -1097,6 +1097,16 @@ export interface Footer {
       }[]
     | null;
   copyrightText?: string | null;
+  /**
+   * Add social media links
+   */
+  socialLinks?:
+    | {
+        platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram' | 'youtube';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1148,6 +1158,13 @@ export interface FooterSelect<T extends boolean = true> {
         id?: T;
       };
   copyrightText?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

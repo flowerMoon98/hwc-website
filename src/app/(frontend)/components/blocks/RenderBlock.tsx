@@ -15,12 +15,12 @@ import Testimonials from './Testimonial' // File is named Testimonial.tsx but ex
 
 // Define a simpler approach to block types
 type BlockComponentsType = {
-  hero: typeof Hero;
-  content: typeof Content;
-  contactForm: typeof ContactForm;
-  intro: typeof Intro;
-  ourNiche: typeof OurNiche;
-  testimonials: typeof Testimonials;
+  hero: typeof Hero
+  content: typeof Content
+  contactForm: typeof ContactForm
+  intro: typeof Intro
+  ourNiche: typeof OurNiche
+  testimonials: typeof Testimonials
 }
 
 // Map block types to their respective components
@@ -73,9 +73,10 @@ export const RenderBlock: React.FC<RenderBlockProps> = ({ blocks, className }) =
   if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
     return null
   }
+  console.log('Block data:', blocks)
 
   return (
-    <div className={className}>
+    <div className={className || 'blocks-container'}>
       {blocks.map((block, index) => {
         // Type guard to ensure blockType is a valid key
         const blockType = block.blockType as keyof BlockComponentsType
@@ -83,12 +84,15 @@ export const RenderBlock: React.FC<RenderBlockProps> = ({ blocks, className }) =
 
         if (!BlockComponent) {
           console.warn(`Block of type '${block.blockType}' is not supported.`)
-          return (
-            <div key={`unsupported-${index}`} className="hidden">
-              Unsupported block type: {block.blockType}
-            </div>
-          )
+          return null // Don't render anything for unsupported blocks in production
         }
+
+        // Hero blocks need special treatment - they should be at the top with no spacing
+        const isHeroBlock = blockType === 'hero'
+        // First non-hero block shouldn't have spacing
+        const isFirstNonHeroBlock = index === 0 && !isHeroBlock
+        // Determine if we need spacing
+        const needsSpacing = !isHeroBlock && !isFirstNonHeroBlock && index > 0
 
         return (
           <ErrorBoundary
@@ -96,11 +100,11 @@ export const RenderBlock: React.FC<RenderBlockProps> = ({ blocks, className }) =
             FallbackComponent={BlockErrorFallback}
             onReset={() => {
               // Reset the error state when "Try again" is clicked
+              console.log('Attempting to reset block:', blockType, index)
             }}
           >
-            <div className={index > 0 ? 'block-spacing' : ''}>
-              {/* Type assertion needed due to the dynamic nature of blocks */}
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <div className={needsSpacing ? 'block-spacing' : ''}>
+              {/* Use the BlockComponent variable we already have */}
               <BlockComponent {...(block as any)} />
             </div>
           </ErrorBoundary>

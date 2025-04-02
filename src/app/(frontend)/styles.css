@@ -1,5 +1,37 @@
 :root {
   --font-mono: 'Roboto Mono', monospace;
+  --spacing-base: 1rem;
+  --spacing-section: 4rem;
+  --spacing-block: 2rem;
+}
+
+/* Global layout classes for page structure */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.blocks-container > div {
+  width: 100%;
+}
+
+/* Block spacing between components */
+.block-spacing {
+  margin-top: var(--spacing-block);
+}
+
+/* Visually hide elements while keeping them accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 * {

@@ -65,15 +65,24 @@ export default async function DynamicPage(props: Props) {
   }
   
   return (
-    <main className="min-h-screen">
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-4xl font-bold mb-8">{page.title}</h1>
+    <>
+      {/* Using visually-hidden for accessibility while letting hero block serve as visual title */}
+      {page.title && (
+        <h1 className="sr-only">{page.title}</h1>
+      )}
+      <div className="page-content">
         {page.layout && page.layout.length > 0 ? (
-          <RenderBlock blocks={page.layout} />
+          <RenderBlock 
+            blocks={page.layout}
+            className="blocks-container" 
+          />
         ) : (
-          <p>This page has no content blocks.</p>
+          <div className="container mx-auto py-16 px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">Page Under Construction</h2>
+            <p className="mb-8 text-gray-600">This page has no content blocks yet.</p>
+          </div>
         )}
       </div>
-    </main>
+    </>
   )
 }

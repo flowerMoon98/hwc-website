@@ -43,5 +43,31 @@ export const Footer: GlobalConfig = {
       name: 'copyrightText',
       type: 'text',
     },
+    {
+      name: 'socialLinks',
+      type: 'array',
+      admin: {
+        description: 'Add social media links',
+      },
+      fields: [
+        {
+          name: 'platform',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'LinkedIn', value: 'linkedin' },
+            { label: 'Twitter', value: 'twitter' },
+            { label: 'Facebook', value: 'facebook' },
+            { label: 'Instagram', value: 'instagram' },
+            { label: 'YouTube', value: 'youtube' }
+          ],
+        },
+        {
+          name: 'url',
+          type: 'text',
+          required: true,
+        }
+      ],
+    },
   ],
 }
